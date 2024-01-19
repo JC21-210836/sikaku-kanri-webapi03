@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String,DateTime
+from sqlalchemy.schema import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -24,6 +25,48 @@ class Item(Base):
     item_id = Column(String(4), index=True)
     item_name = Column(String(100), index=True)
     price = Column(Integer)
+
+
+class Voucher(Base): 
+    __tablename__ = "voucher"
+    
+    voucher_id = Column(String(4), ForeignKey("voucherType.voucher_id"), primary_key=True)
+    user_id = Column(String(4), ForeignKey("user.user_id"))
+    voucher_name = Column(String(100))
+    deadline = Column(DateTime)
+
+
+class VoucherType(Base): 
+
+    __tablename__ = "voucherType" 
+
+    voucher_id = Column(String(4), primary_key=True) 
+    voucher_name = Column(String(100)) 
+
+
+class User(Base): 
+    __tablename__ ="user" 
+
+    user_id =Column(String(4), primary_key=True) 
+    user_name =Column(String(100)) 
+
+
+class Exam(Base): 
+    __tablename__="exam" 
+
+    exam_id =Column(String(4), primary_key=True) 
+    exam_name =Column(String(100)) 
+
+
+
+class Sikaku(Base): 
+    __tablename__ = "sikaku" 
+
+    exam_id = Column(String(4), ForeignKey("exam.exam_id"), primary_key=True) 
+    user_id = Column(String(4), ForeignKey("user.user_id")) 
+    exam_name =Column(String(100)) 
+    pass_date = Column(DateTime) 
+
 
 # テーブルが存在しない場合は作成する
 Base.metadata.create_all(bind=engine)
