@@ -1,4 +1,3 @@
-import datetime
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Session
@@ -33,7 +32,7 @@ def get_sikaku_item(ID: str, token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="そんな試験は無いよ")
  
 @app.post("/add")
-def add_sikaku_item(ID: str, UID:str, NAME: str, DATE:datetime, token: str, db: Session = Depends(get_db)):
+def add_sikaku_item(ID: str, UID:str, NAME: str, DATE:DateTime, token: str, db: Session = Depends(get_db)):
     # 新しい Sikaku レコードを作成してデータベースに追加
     new_sikaku = Sikaku(exam_id=ID, user_id=UID, exam_name=NAME, pass_date=DATE)
     if new_sikaku == "":
