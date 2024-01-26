@@ -1,26 +1,47 @@
-from fastapi import FastAPI
-
+import datetime
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy import DateTime
+from sqlalchemy.orm import Session
+from db import SessionLocal, Sikaku
+ 
 app = FastAPI()
-
-# 資格リストのデータ
-Passed = [
-    {"ID": "FE00", "NAME": "基本情報技術者試験", "DATE": "2022/06/18"},
-    {"ID": "OR00", "NAME": "Java SE Bronze", "DATE": "2023/02/20"}
-]
-
+ 
+# データベースセッションの依存関数
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+ 
 @app.get("/list")
-def get_passed_list(token:str):
-    return Passed
-
+def get_sikaku_list(token: str, db: Session = Depends(get_db)):
+    # データベースからすべての Exam レコードを取得
+    sikakus = db.query(Sikaku).all()
+    # 取得した Sikaku レコードを辞書のリストに変換して返す
+    return sikakus
+ 
 @app.get("/{ID}")
-def get_passed_item(ID:str,token:str):
-    if ID == "FE00":
-        return Passed[0]
-    elif ID == "OR00":
-        return Passed[1]
+def get_sikaku_item(ID: str, token: str, db: Session = Depends(get_db)):
+    # データベースから指定された exam_id の Sikaku レコードを取得
+    sikaku = db.query(Sikaku).filter(Sikaku.exam_id == ID).first()
+    if sikaku:
+        # レコードが存在する場合は詳細情報を返す
+        return {"exam_id": sikaku.exam_id, "exam_name": sikaku.exam_name}
     else:
-        return {}
-
+        # レコードが存在しない場合は HTTP 404 エラーを返す
+        raise HTTPException(status_code=404, detail="そんな試験は無いよ")
+ 
 @app.post("/add")
-def add_passed_item(ID:str,DATE:str,token:str):
-    return {"message": "Passed was added successfully", "Passed": {{"ID": "FE00", "DATE": "2022/06/18"},}}
+def add_sikaku_item(ID: str, UID:str, NAME: str, DATE:datetime, token: str, db: Session = Depends(get_db)):
+    # 新しい Sikaku レコードを作成してデータベースに追加
+    new_sikaku = Sikaku(exam_id=ID, user_id=UID, exam_name=NAME, pass_date=DATE)
+    if new_sikaku == "":
+        return {"message": "空なのでエラー"}
+    else:
+        db.add(new_sikaku)
+        # データベースの変更をコミット
+        db.commit()
+        # コミット後のデータをリフレッシュして、新しい Sikaku レコードの詳細情報を返す
+        db.refresh(new_sikaku)
+        return {"message": "Sikaku added successfully", "sikaku": {"exam_id": new_sikaku.exam_id, "user_id": new_sikaku.user_id, "exam_name": new_sikaku.exam_name, "pass_date": new_sikaku.pass_date}}
