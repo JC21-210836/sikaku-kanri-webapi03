@@ -27,7 +27,7 @@ def get_sikaku_item(ID: str, token: str, db: Session = Depends(get_db)):
     sikaku = db.query(Sikaku).filter(Sikaku.exam_id == ID).first()
     if sikaku:
         # レコードが存在する場合は詳細情報を返す
-        return {"exam_id": sikaku.exam_id, "exam_name": sikaku.exam_name}
+        return {"exam_id": sikaku.exam_id, "exam_name": sikaku.exam_name, "pass_date": sikaku.pass_date}
     else:
         # レコードが存在しない場合は HTTP 404 エラーを返す
         raise HTTPException(status_code=404, detail="そんな試験は無いよ")
