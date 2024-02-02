@@ -21,10 +21,10 @@ def get_vouchertype_list(token: str, db: Session = Depends(get_db)):
 @app.get("/{ID}")
 def get_vouchertype_item(ID: str, token: str, db: Session = Depends(get_db)):
     # データベースから指定された exam_id の Exam レコードを取得
-    vouchertype = db.query(VoucherType).filter(VoucherType.vouchertype_id == ID).first()
+    vouchertype = db.query(VoucherType).filter(VoucherType.voucher_id == ID).first()
     if vouchertype:
         # レコードが存在する場合は詳細情報を返す
-        return {"vouchertype_id": vouchertype.vouchertype_id, "vouchertype_name": vouchertype.vouchertype_name}
+        return {"vouchertype_id": vouchertype.voucher_id, "vouchertype_name": vouchertype.voucher_name}
     else:
         # レコードが存在しない場合は HTTP 404 エラーを返す
         raise HTTPException(status_code=404, detail="そんな試験は無いよ")
