@@ -31,7 +31,7 @@ class Voucher(Base):
     __tablename__ = "voucher"
     
     voucher_id = Column(String(4), ForeignKey("voucherType.voucher_id"), primary_key=True)
-    user_id = Column(String(4), ForeignKey("user.user_id"))
+    user_id = Column(String(4))
     voucher_name = Column(String(100))
     deadline = Column(DateTime)
 
@@ -63,7 +63,7 @@ class Sikaku(Base):
     __tablename__ = "sikaku" 
 
     exam_id = Column(String(4), ForeignKey("exam.exam_id"), primary_key=True) 
-    user_id = Column(String(4), ForeignKey("user.user_id")) 
+    user_id = Column(String(4)) 
     exam_name =Column(String(100)) 
     pass_date = Column(DateTime) 
 
