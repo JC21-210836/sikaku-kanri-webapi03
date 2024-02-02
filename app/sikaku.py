@@ -33,11 +33,12 @@ def get_sikaku_item(ID: str, token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="そんな試験は無いよ")
  
 @app.post("/add")
-def add_sikaku_item(ID: str, UID:str, NAME: str, strDATE:str, token: str, db: Session = Depends(get_db)):
+#user_id, exam_nameいらない？
+def add_sikaku_item(ID: str, strDATE: str, token: str, db: Session = Depends(get_db)):
     #DATEをStringからDateTimeに変換
     DATE = datetime.strptime(strDATE, "%Y/%m/%d")
     # 新しい Sikaku レコードを作成してデータベースに追加
-    new_sikaku = Sikaku(exam_id=ID, user_id=UID, exam_name=NAME, pass_date=DATE)
+    new_sikaku = Sikaku(exam_id=ID, pass_date=DATE)
     if new_sikaku == "":
         return {"message": "空なのでエラー"}
     else:
@@ -47,3 +48,4 @@ def add_sikaku_item(ID: str, UID:str, NAME: str, strDATE:str, token: str, db: Se
         # コミット後のデータをリフレッシュして、新しい Sikaku レコードの詳細情報を返す
         db.refresh(new_sikaku)
         return {"message": "Sikaku added successfully", "sikaku": {"exam_id": new_sikaku.exam_id, "user_id": new_sikaku.user_id, "exam_name": new_sikaku.exam_name, "pass_date": new_sikaku.pass_date}}
+
