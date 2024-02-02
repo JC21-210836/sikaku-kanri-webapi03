@@ -32,7 +32,7 @@ def get_vouchertype_item(ID: str, token: str, db: Session = Depends(get_db)):
 @app.post("/add")
 def add_vouchertype_item(ID: str, NAME: str, token: str, db: Session = Depends(get_db)):
     # 新しい VoucherType レコードを作成してデータベースに追加
-    new_vouchertype = VoucherType(vouchertype_id=ID, vouchertype_name=NAME)
+    new_vouchertype = VoucherType(voucher_id=ID, voucher_name=NAME)
     if new_vouchertype == "":
         return {"message": "空なのでエラー"}
     else:
@@ -41,4 +41,4 @@ def add_vouchertype_item(ID: str, NAME: str, token: str, db: Session = Depends(g
         db.commit()
         # コミット後のデータをリフレッシュして、新しい VoucherType レコードの詳細情報を返す
         db.refresh(new_vouchertype)
-        return {"message": "Vouchetyper added successfully", "vouchertype": {"vouchertype_id": new_vouchertype.vouchertype_id, "vouchertype_name": new_vouchertype.vouchertype_name}}
+        return {"message": "Vouchetyper added successfully", "vouchertype": {"vouchertype_id": new_vouchertype.voucher_id, "vouchertype_name": new_vouchertype.voucher_name}}
