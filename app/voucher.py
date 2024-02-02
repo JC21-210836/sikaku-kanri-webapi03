@@ -37,7 +37,7 @@ def get_voucher_item(ID: str, token: str, db: Session = Depends(get_db)):
 def add_voucher_item(ID: str, DATE: str, token: str, db: Session = Depends(get_db)):
     # 新しい Voucher レコードを作成してデータベースに追加
     new_voucher_item = Voucher(voucher_id=ID, deadline=DATE)
-    if new_vouvher_item == "":
+    if new_voucher_item == "":
         return {"message": "空なのでエラー"}
     else:
         db.add(new_voucher_item)
