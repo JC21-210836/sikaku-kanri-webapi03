@@ -20,7 +20,7 @@ def get_exam_list(token: str, db: Session = Depends(get_db)):
     return exams
 
 @app.get("/{ID}")
-def get_exam_item(ID: str, token: str):
+def get_exam_item(ID: str, token: str, db: Session = Depends(get_db)):
     # データベースから指定された exam_id の Exam レコードを取得
     exam = db.query(Exam).filter(Exam.exam_id == ID).first()
     if exam:
